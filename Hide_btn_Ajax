@@ -1,0 +1,60 @@
+function hide_btn(id){
+	// Hide buttons if attendance already taken
+		var stu_id=id.substring(1);
+		if(id.substring(0,1)=="p"){
+			document.getElementById(id).style.display="none";
+			id=id.replace("p","a");
+			document.getElementById(id).style.display="none";
+			document.getElementById("c"+stu_id).style.display="block";
+		}
+		else if(id.substring(0,1)=="a"){
+			document.getElementById(id).style.display="none";
+			id=id.replace("a","p");
+			document.getElementById(id).style.display="none";
+			document.getElementById("c"+stu_id).style.display="block";
+		}
+		else{
+			document.getElementById(id).style.display="none";
+			id=id.replace("c","p");
+			document.getElementById(id).style.display="inline";
+			id=id.replace("p","a");
+			document.getElementById(id).style.display="inline";
+		}
+	}
+  
+  
+  
+  // When click on any button of whole page
+	document.querySelectorAll('button').forEach(occurence => {
+		let id = occurence.getAttribute('id');
+		occurence.addEventListener('click', function(){
+			// fill_attendance(id, {{ subject.id }});
+			// hide_btn(id);
+		});
+	});
+  
+  
+  
+  // Ajax function
+  
+  $().ready(function(){
+			send_data = function(is_present, stud_id){
+
+				$.ajax({
+					type:"GET",
+					url: "{% url 'attendance' %}",
+					data: {
+						'is_present': is_present,
+						'stud_id': stud_id,
+						'sub_id': {{ subject.id }}
+					},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success==false){
+							alert("Attendance is already taken !!!");
+						}
+					}
+				});
+			}
+		});
+    send_data(...);
